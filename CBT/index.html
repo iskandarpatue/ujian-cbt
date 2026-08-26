@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Portal Ujian CBT - SMAN 1 Batudaa Pantai</title>
+  <title>Portal Ujian CBT - Terproteksi</title>
   <style>
     * {
       box-sizing: border-box;
@@ -21,7 +21,7 @@
       color: #f8fafc;
     }
 
-    /* Layar Awal */
+    /* Layar Mulai */
     #start-screen {
       display: flex;
       flex-direction: column;
@@ -35,7 +35,7 @@
       background: #1e293b;
       padding: 32px 24px;
       border-radius: 16px;
-      max-width: 460px;
+      max-width: 480px;
       width: 100%;
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
       border: 1px solid #334155;
@@ -60,8 +60,44 @@
       font-size: 13px;
       color: #94a3b8;
       line-height: 1.6;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
+
+    /* Input Link Form */
+    .input-group {
+      text-align: left;
+      margin-bottom: 18px;
+    }
+    .input-label {
+      font-size: 13px;
+      color: #cbd5e1;
+      margin-bottom: 6px;
+      display: block;
+      font-weight: 500;
+    }
+    .form-input {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 14px;
+      border-radius: 8px;
+      border: 1px solid #475569;
+      background: #0f172a;
+      color: #ffffff;
+      outline: none;
+      user-select: text;
+      -webkit-user-select: text;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus {
+      border-color: #3b82f6;
+    }
+    .alert-input-error {
+      color: #f87171;
+      font-size: 12px;
+      margin-top: 6px;
+      display: none;
+    }
+
     .btn {
       background: #2563eb;
       color: #ffffff;
@@ -164,10 +200,23 @@
   <div id="start-screen">
     <div class="card">
       <div class="badge">SISTEM UJIAN TERPROTEKSI</div>
-      <h2>Asesmen / Ujian Sumatif</h2>
+      <h2>Portal Ujian Online</h2>
       <p>
-        Ujian akan berjalan dalam mode layar penuh (<em>Fullscreen</em>). Dilarang berpindah tab, menutup browser, atau membuka aplikasi lain. Jika terdeteksi melanggar, lembar ujian akan terkunci otomatis dan memerlukan token pengawas.
+        Ujian akan berjalan dalam mode layar penuh. Dilarang berpindah tab atau membuka aplikasi lain selama pengerjaan.
       </p>
+
+      <div class="input-group">
+        <label class="input-label" for="custom-form-url">Link Google Form Ujian:</label>
+        <input 
+          type="url" 
+          id="custom-form-url" 
+          class="form-input" 
+          placeholder="Tempel link Google Form di sini..." 
+          autocomplete="off"
+        />
+        <div id="url-input-error" class="alert-input-error">Link ujian wajib diisi dengan benar!</div>
+      </div>
+
       <button class="btn" onclick="startExam()">Mulai Kerjakan Ujian</button>
     </div>
   </div>
@@ -177,11 +226,11 @@
     <iframe id="exam-frame" src=""></iframe>
   </div>
 
-  <!-- Modal Terkunci Saat Curang/Pindah Tab -->
+  <!-- Modal Terkunci Saat Keluar/Pindah Tab -->
   <div id="lock-modal">
     <div class="lock-card">
       <h3>⚠️ Ujian Terkunci!</h3>
-      <p id="violation-reason">Terdeteksi keluar dari ruang ujian atau berpindah aplikasi.</p>
+      <p id="violation-reason">Terdeteksi keluar dari layar ujian atau berpindah aplikasi.</p>
       <input type="text" id="supervisor-token" class="token-input" placeholder="TOKEN PENGAWAS" autocomplete="off" />
       <button class="btn btn-danger" onclick="unlockExam()">Buka Kunci</button>
       <div id="token-error" class="error-msg">Token salah! Hubungi pengawas ruangan.</div>
@@ -190,10 +239,9 @@
 
   <script>
     // ==========================================
-    // PENGATURAN SOAL & TOKEN
+    // PENGATURAN TOKEN PENGAWAS
     // ==========================================
-    const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSd9DoQwtOP9pmMNrXFaSUBYIGZkIvHxQkEPrQVM5_JYlTugNg/viewform?embedded=true";
-    let SUPERVISOR_TOKEN = "GURU2026"; // Ganti token pengawas di sini jika diperlukan
+    let SUPERVISOR_TOKEN = "GURU2026";
     // ==========================================
 
     let isExamRunning = false;
@@ -204,27 +252,54 @@
     const tokenInput = document.getElementById("supervisor-token");
     const tokenError = document.getElementById("token-error");
     const violationReason = document.getElementById("violation-reason");
+    const customFormUrlInput = document.getElementById("custom-form-url");
+    const urlInputError = document.getElementById("url-input-error");
 
-    // 1. Memulai Ujian & Mengaktifkan Layar Penuh
+    // Fungsi otomatisasi format link embed Google Form
+    function formatExamUrl(url) {
+      url = url.trim();
+      if (!url.startsWith("http://") && !url.startsWith("https://")) {
+        url = "https://" + url;
+      }
+      if (url.includes("docs.google.com/forms")) {
+        if (!url.includes("embedded=true")) {
+          url += url.includes("?") ? "&embedded=true" : "?embedded=true";
+        }
+      }
+      return url;
+    }
+
+    // 1. Memulai Ujian
     function startExam() {
+      const rawUrl = customFormUrlInput.value.trim();
+
+      if (!rawUrl) {
+        urlInputError.textContent = "Silakan masukkan link Google Form terlebih dahulu!";
+        urlInputError.style.display = "block";
+        return;
+      }
+
+      urlInputError.style.display = "none";
+      const readyUrl = formatExamUrl(rawUrl);
+
       const el = document.documentElement;
       const requestFS = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
 
       if (requestFS) {
         requestFS.call(el).then(() => {
-          activateExam();
+          activateExam(readyUrl);
         }).catch(() => {
-          activateExam();
+          activateExam(readyUrl);
         });
       } else {
-        activateExam();
+        activateExam(readyUrl);
       }
     }
 
-    function activateExam() {
+    function activateExam(url) {
       startScreen.style.display = "none";
       examContainer.style.display = "block";
-      examFrame.src = FORM_URL;
+      examFrame.src = url;
       isExamRunning = true;
     }
 
@@ -245,7 +320,7 @@
         lockModal.style.display = "none";
         tokenError.style.display = "none";
 
-        // Kembalikan ke Layar Penuh
+        // Kembalikan ke Mode Fullscreen
         const el = document.documentElement;
         if (!document.fullscreenElement && (el.requestFullscreen || el.webkitRequestFullscreen)) {
           (el.requestFullscreen || el.webkitRequestFullscreen).call(el).catch(() => {});
@@ -255,30 +330,30 @@
       }
     }
 
-    // 4. Deteksi Pindah Tab / Minimize
+    // 4. Deteksi Pindah Tab / Buka Aplikasi Lain
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "hidden" && isExamRunning) {
         triggerLock("Terdeteksi berpindah tab atau meminimalkan browser.");
       }
     });
 
-    // 5. Deteksi Kehilangan Fokus Window
+    // 5. Deteksi Kehilangan Fokus
     window.addEventListener("blur", () => {
       setTimeout(() => {
         if (document.activeElement !== examFrame && isExamRunning) {
-          triggerLock("Terdeteksi membuka jendela atau aplikasi lain.");
+          triggerLock("Terdeteksi membuka aplikasi atau jendela lain.");
         }
       }, 500);
     });
 
-    // 6. Deteksi Keluar dari Mode Fullscreen
+    // 6. Deteksi Keluar Layar Penuh
     document.addEventListener("fullscreenchange", () => {
       if (!document.fullscreenElement && isExamRunning) {
         triggerLock("Terdeteksi keluar dari mode layar penuh.");
       }
     });
 
-    // 7. Blokir Tombol Pintas & Klik Kanan
+    // 7. Blokir Klik Kanan & Shortcut DevTools
     document.addEventListener("contextmenu", (e) => e.preventDefault());
     document.addEventListener("keydown", (e) => {
       if (
