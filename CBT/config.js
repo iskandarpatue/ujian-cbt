@@ -3,7 +3,7 @@
 // ==========================================
 const CONFIG = {
   // Nama Sekolah / Judul Ujian
-  schoolName: "SMAN 1 DIGITAL",
+  schoolName: "SMAN 1 Batudaa Pantai",
   examTitle: "Asesmen Sumatif Akhir Semester",
   
   // Path logo di dalam folder assets
@@ -13,7 +13,7 @@ const CONFIG = {
   examUrl: "https://docs.google.com/forms/d/e/1FAIpQLSc_CONTOH_ID/viewform?embedded=true",
   
   // Token Pengawas (Huruf Kapital)
-  supervisorToken: "LULUS2026",
+  supervisorToken: "PENGAWAS",
   
   // Petunjuk singkat
   instructions: "Dilarang membuka tab baru, aplikasi lain, atau keluar dari mode fullscreen selama ujian berlangsung."
