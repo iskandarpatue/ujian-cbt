@@ -22,7 +22,7 @@
       color: #f8fafc;
     }
 
-    /* Layar Awal */
+    /* Layar Mulai */
     #start-screen {
       display: flex;
       flex-direction: column;
@@ -35,7 +35,7 @@
     }
     .card {
       background: #1e293b;
-      padding: 28px 20px;
+      padding: 28px 20px 20px 20px;
       border-radius: 16px;
       max-width: 480px;
       width: 100%;
@@ -103,15 +103,18 @@
       background: #1d4ed8;
     }
 
-    /* Keterangan Pembuat / Footer */
-    .author-credit {
-      margin-top: 20px;
-      font-size: 12px;
+    /* Footer Credit */
+    .footer-credit {
+      margin-top: 18px;
+      font-size: 11px;
       color: #64748b;
-      font-weight: 500;
       letter-spacing: 0.5px;
       border-top: 1px solid #334155;
-      padding-top: 14px;
+      padding-top: 12px;
+    }
+    .footer-credit strong {
+      color: #94a3b8;
+      font-weight: 600;
     }
 
     /* Kontainer Ujian */
@@ -167,7 +170,7 @@
       border: none;
     }
 
-    /* Modal Dialog Umum (Lock & Exit Confirm) */
+    /* Modal Dialog Umum */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -284,18 +287,18 @@
       <div class="rules-box">
         <strong>Ketentuan Selama Ujian:</strong>
         <ul>
-          <li>Layar ponsel otomatis terkunci dalam mode ujian (Layar dilarang mati).</li>
+          <li>Layar ponsel otomatis terkunci dalam mode ujian (Layar tidak akan mati).</li>
           <li>Dilarang berpindah aplikasi, membuka floating window, atau meminimalkan browser.</li>
-          <li>Jika keluar, lembar ujian terkunci & wajib token pengawas.</li>
+          <li>Jika keluar, lembar ujian terkunci & wajib memasukkan token pengawas.</li>
           <li><strong>Menekan tombol keluar paksa akan membatalkan ujian dan memberi nilai 0.</strong></li>
         </ul>
       </div>
 
       <button class="btn" onclick="startExam()">Mulai Kerjakan Ujian</button>
 
-      <!-- Label Pembuat di Bagian Bawah -->
-      <div class="author-credit">
-        By. Pk Guru Iskandar
+      <!-- Bagian Footer Credit -->
+      <div class="footer-credit">
+        By. <strong>Pk Guru Iskandar</strong> & <strong>Gemini AI</strong>
       </div>
     </div>
   </div>
@@ -347,8 +350,9 @@
       <p>Anda telah memilih untuk keluar dari sesi ujian sebelum waktu berakhir.</p>
       <div class="score-badge">NILAI: 0</div>
       <p style="font-size: 12px; color: #94a3b8;">Status: Diskualifikasi / Keluar Mandiri. Silakan hubungi proktor/pengawas ruang Anda.</p>
-      <div class="author-credit" style="border: none; margin-top: 15px;">
-        By. Pk Guru Iskandar
+      
+      <div class="footer-credit" style="margin-top: 24px;">
+        By. <strong>Pk Guru Iskandar</strong> & <strong>Gemini AI</strong>
       </div>
     </div>
   </div>
@@ -376,7 +380,7 @@
     const tokenError = document.getElementById("token-error");
     const violationReason = document.getElementById("violation-reason");
 
-    // Fallback Logo
+    // Fallback Logo jika belum ada file logo.png
     function handleLogoError(img) {
       if (!img.dataset.retried) {
         img.dataset.retried = "true";
@@ -386,13 +390,13 @@
       }
     }
 
-    // 1. Kunci Layar Smartphone (Screen Wake Lock API - Android & iOS)
+    // 1. Kunci Layar Smartphone (Screen Wake Lock API)
     async function enableScreenWakeLock() {
       if ('wakeLock' in navigator) {
         try {
           wakeLockSentinel = await navigator.wakeLock.request('screen');
         } catch (err) {
-          console.log("WakeLock ditolak atau tidak didukung di perangkat ini.");
+          console.log("WakeLock gagal atau tidak didukung.");
         }
       }
     }
@@ -482,7 +486,7 @@
       disqualifiedScreen.style.display = "flex";
     }
 
-    // 6. Deteksi Navigasi / Pindah Aplikasi (Android & iPhone)
+    // 6. Deteksi Navigasi / Pindah Aplikasi
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "hidden" && isExamRunning) {
         triggerLock("Terdeteksi berpindah aplikasi, menutup browser, atau membuka notifikasi.");
@@ -491,21 +495,18 @@
       }
     });
 
-    // Deteksi khusus iOS Safari saat meninggalkan halaman
     window.addEventListener("pagehide", () => {
       if (isExamRunning) {
         triggerLock("Terdeteksi keluar dari aplikasi browser.");
       }
     });
 
-    // Deteksi Keluar Layar Penuh
     document.addEventListener("fullscreenchange", () => {
       if (!document.fullscreenElement && isExamRunning && !unlockCooldown) {
         triggerLock("Terdeteksi keluar dari mode layar penuh.");
       }
     });
 
-    // Cegah tombol Refresh / Back tidak sengaja
     window.onbeforeunload = function() {
       if (isExamRunning) {
         return "Ujian sedang berlangsung! Jika Anda keluar, lembar kerja akan terkunci.";
