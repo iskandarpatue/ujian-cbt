@@ -103,6 +103,17 @@
       background: #1d4ed8;
     }
 
+    /* Keterangan Pembuat / Footer */
+    .author-credit {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #64748b;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      border-top: 1px solid #334155;
+      padding-top: 14px;
+    }
+
     /* Kontainer Ujian */
     #exam-container {
       display: none;
@@ -116,7 +127,7 @@
       flex-direction: column;
     }
     
-    /* Top Bar Ujian (Navigasi Atas) */
+    /* Top Bar Ujian */
     .exam-topbar {
       height: 48px;
       background: #0f172a;
@@ -281,6 +292,11 @@
       </div>
 
       <button class="btn" onclick="startExam()">Mulai Kerjakan Ujian</button>
+
+      <!-- Label Pembuat di Bagian Bawah -->
+      <div class="author-credit">
+        By. Pk Guru Iskandar
+      </div>
     </div>
   </div>
 
@@ -331,6 +347,9 @@
       <p>Anda telah memilih untuk keluar dari sesi ujian sebelum waktu berakhir.</p>
       <div class="score-badge">NILAI: 0</div>
       <p style="font-size: 12px; color: #94a3b8;">Status: Diskualifikasi / Keluar Mandiri. Silakan hubungi proktor/pengawas ruang Anda.</p>
+      <div class="author-credit" style="border: none; margin-top: 15px;">
+        By. Pk Guru Iskandar
+      </div>
     </div>
   </div>
 
@@ -367,13 +386,13 @@
       }
     }
 
-    // 1. Kunci Layar Smartphone (Screen Wake Lock API - Android & iOS Safari 16.4+)
+    // 1. Kunci Layar Smartphone (Screen Wake Lock API - Android & iOS)
     async function enableScreenWakeLock() {
       if ('wakeLock' in navigator) {
         try {
           wakeLockSentinel = await navigator.wakeLock.request('screen');
         } catch (err) {
-          console.log("WakeLock gagal atau ditolak.");
+          console.log("WakeLock ditolak atau tidak didukung di perangkat ini.");
         }
       }
     }
@@ -454,7 +473,7 @@
       isExamRunning = false;
       exitModal.style.display = "none";
       examContainer.style.display = "none";
-      examFrame.src = ""; // Putus koneksi Google Form
+      examFrame.src = "";
 
       if (wakeLockSentinel) {
         wakeLockSentinel.release().catch(() => {});
