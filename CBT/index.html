@@ -28,26 +28,26 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-      padding: 20px;
-      text-align: center;
+      min-height: 100vh;
+      padding: 24px 16px;
       overflow-y: auto;
     }
     .card {
       background: #1e293b;
-      padding: 28px 20px 20px 20px;
+      padding: 24px 20px;
       border-radius: 16px;
       max-width: 480px;
       width: 100%;
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
       border: 1px solid #334155;
+      text-align: center;
     }
     .logo-container {
       margin-bottom: 12px;
     }
     .logo-img {
-      max-width: 80px;
-      max-height: 80px;
+      max-width: 75px;
+      max-height: 75px;
       object-fit: contain;
     }
     .badge {
@@ -58,46 +58,75 @@
       border-radius: 9999px;
       font-size: 11px;
       font-weight: 600;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       letter-spacing: 0.5px;
     }
     .card h2 {
       font-size: 19px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       color: #ffffff;
     }
     .card p {
-      font-size: 13px;
+      font-size: 12px;
       color: #94a3b8;
       line-height: 1.5;
       margin-bottom: 16px;
     }
-    .rules-box {
-      background: #0f172a;
-      border-left: 3px solid #f59e0b;
-      padding: 10px 14px;
-      border-radius: 6px;
+
+    /* Form Pilihan Pelajaran & Input Link */
+    .form-group {
       text-align: left;
+      margin-bottom: 14px;
+    }
+    .form-label {
       font-size: 12px;
       color: #cbd5e1;
-      margin-bottom: 20px;
-      line-height: 1.5;
+      margin-bottom: 6px;
+      display: block;
+      font-weight: 600;
     }
-    .rules-box ul {
-      padding-left: 18px;
-      margin-top: 6px;
+    .custom-select, .form-input {
+      width: 100%;
+      padding: 11px 12px;
+      font-size: 13px;
+      border-radius: 8px;
+      border: 1px solid #475569;
+      background: #0f172a;
+      color: #ffffff;
+      outline: none;
+      user-select: text;
+      -webkit-user-select: text;
+      transition: border-color 0.2s;
     }
+    .custom-select:focus, .form-input:focus {
+      border-color: #3b82f6;
+    }
+    .custom-select option {
+      background: #1e293b;
+      color: #ffffff;
+    }
+    #class-group {
+      display: none;
+    }
+    .alert-error {
+      color: #f87171;
+      font-size: 11px;
+      margin-top: 4px;
+      display: none;
+    }
+
     .btn {
       background: #2563eb;
       color: #ffffff;
       border: none;
       padding: 13px;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
       border-radius: 8px;
       cursor: pointer;
       width: 100%;
       transition: background 0.2s;
+      margin-top: 6px;
     }
     .btn:hover {
       background: #1d4ed8;
@@ -105,12 +134,12 @@
 
     /* Footer Credit */
     .footer-credit {
-      margin-top: 18px;
+      margin-top: 16px;
       font-size: 11px;
       color: #64748b;
       letter-spacing: 0.5px;
       border-top: 1px solid #334155;
-      padding-top: 12px;
+      padding-top: 10px;
     }
     .footer-credit strong {
       color: #94a3b8;
@@ -143,19 +172,20 @@
       z-index: 20;
     }
     .exam-topbar-title {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       color: #93c5fd;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      max-width: 65%;
     }
     .btn-exit {
       background: #dc2626;
       color: #ffffff;
       border: none;
       padding: 6px 12px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       border-radius: 6px;
       cursor: pointer;
@@ -195,14 +225,14 @@
       border: 1px solid #ef4444;
     }
     .modal-card h3 {
-      font-size: 18px;
+      font-size: 17px;
       margin-bottom: 10px;
     }
     .modal-card p {
       font-size: 13px;
       color: #cbd5e1;
       line-height: 1.5;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
     .token-input {
       width: 100%;
@@ -267,7 +297,7 @@
 </head>
 <body>
 
-  <!-- 1. Layar Awal -->
+  <!-- 1. Layar Mulai & Pemilihan Mata Pelajaran -->
   <div id="start-screen">
     <div class="card">
       <div class="logo-container">
@@ -280,23 +310,44 @@
         />
       </div>
 
-      <div class="badge">SISTEM UJIAN TERPROTEKSI</div>
+      <div class="badge">SISTEM UJIAN CBT TERPROTEKSI</div>
       <h2>Portal Ujian Online</h2>
-      <p>Selamat datang di portal asesmen. Pastikan perangkat Anda terhubung ke internet dan daya baterai mencukupi.</p>
+      <p>Silakan pilih mata pelajaran, jenjang kelas, dan tempel tautan soal Google Form yang diberikan oleh guru/pengawas.</p>
 
-      <div class="rules-box">
-        <strong>Ketentuan Selama Ujian:</strong>
-        <ul>
-          <li>Layar ponsel otomatis terkunci dalam mode ujian (Layar tidak akan mati).</li>
-          <li>Dilarang berpindah aplikasi, membuka floating window, atau meminimalkan browser.</li>
-          <li>Jika keluar, lembar ujian terkunci & wajib memasukkan token pengawas.</li>
-          <li><strong>Menekan tombol keluar paksa akan membatalkan ujian dan memberi nilai 0.</strong></li>
-        </ul>
+      <!-- Pilihan Mata Pelajaran -->
+      <div class="form-group">
+        <label class="form-label" for="subject-select">Pilih Mata Pelajaran:</label>
+        <select id="subject-select" class="custom-select" onchange="handleSubjectChange()">
+          <option value="">-- Pilih Mata Pelajaran --</option>
+        </select>
+        <div id="subject-error" class="alert-error">Silakan pilih mata pelajaran!</div>
       </div>
 
-      <button class="btn" onclick="startExam()">Mulai Kerjakan Ujian</button>
+      <!-- Pilihan Kelas (Dinamis Muncul Sesuai Pelajaran) -->
+      <div class="form-group" id="class-group">
+        <label class="form-label" for="class-select">Pilih Tingkat Kelas:</label>
+        <select id="class-select" class="custom-select">
+          <option value="">-- Pilih Kelas --</option>
+        </select>
+        <div id="class-error" class="alert-error">Silakan pilih kelas!</div>
+      </div>
 
-      <!-- Bagian Footer Credit -->
+      <!-- Input Manual Link Google Form -->
+      <div class="form-group">
+        <label class="form-label" for="exam-url-input">Link Google Form Ujian:</label>
+        <input 
+          type="url" 
+          id="exam-url-input" 
+          class="form-input" 
+          placeholder="https://docs.google.com/forms/d/..." 
+          autocomplete="off"
+        />
+        <div id="url-error" class="alert-error">Link ujian wajib diisi dengan benar!</div>
+      </div>
+
+      <button class="btn" onclick="validateAndStart()">Mulai Kerjakan Ujian</button>
+
+      <!-- Footer Credit -->
       <div class="footer-credit">
         By. <strong>Pk Guru Iskandar</strong> & <strong>Gemini AI</strong>
       </div>
@@ -306,7 +357,7 @@
   <!-- 2. Kontainer Ujian Google Form -->
   <div id="exam-container">
     <div class="exam-topbar">
-      <span class="exam-topbar-title">📝 Ujian Sedang Berlangsung</span>
+      <span class="exam-topbar-title" id="active-exam-title">📝 Ujian Sedang Berlangsung</span>
       <button class="btn-exit" onclick="openExitModal()">Keluar Ujian</button>
     </div>
     <iframe id="exam-frame" src=""></iframe>
@@ -358,13 +409,70 @@
   </div>
 
   <script>
-    // ==========================================
-    // PENGATURAN SOAL & TOKEN
-    // ==========================================
-    const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSd9DoQwtOP9pmMNrXFaSUBYIGZkIvHxQkEPrQVM5_JYlTugNg/viewform?embedded=true";
-    const SUPERVISOR_TOKEN = "GURU2026";
-    // ==========================================
+    // =========================================================================
+    // DAFTAR 17 MATA PELAJARAN BESERTA TINGKAT KELASNYA
+    // =========================================================================
+    const SUBJECT_LIST = [
+      { id: "1", name: "1. Bahasa Indonesia", classes: ["Kelas X", "Kelas XI", "Kelas XII"] },
+      { id: "2", name: "2. Bahasa Inggris", classes: ["Kelas X", "Kelas XI", "Kelas XII"] },
+      { id: "3", name: "3. Matematika", classes: ["Kelas X", "Kelas XI", "Kelas XII"] },
+      { id: "4", name: "4. PPKn", classes: ["Kelas X", "Kelas XI", "Kelas XII"] },
+      { id: "5", name: "5. Pend. Agama Islam", classes: ["Kelas X", "Kelas XI", "Kelas XII"] },
+      { id: "6", name: "6. PJOK", classes: ["Kelas X", "Kelas XI", "Kelas XII"] },
+      { id: "7", name: "7. Prakarya", classes: ["Kelas X", "Kelas XI", "Kelas XII"] },
+      { id: "8", name: "8. Seni Budaya", classes: ["Kelas XI", "Kelas XII"] },
+      { id: "9", name: "9. Informatika", classes: [] },
+      { id: "10", name: "10. Biologi", classes: ["Kelas X", "Kelas XI", "Kelas XII"] },
+      { id: "11", name: "11. Fisika", classes: ["Kelas X", "Kelas XI", "Kelas XII"] },
+      { id: "12", name: "12. Kimia", classes: ["Kelas X", "Kelas XI", "Kelas XII"] },
+      { id: "13", name: "13. Sejarah", classes: ["Kelas X", "Kelas XI", "Kelas XII"] },
+      { id: "14", name: "14. Ekonomi", classes: [] },
+      { id: "15", name: "15. Sosiologi", classes: ["Kelas X", "Kelas XI", "Kelas XII"] },
+      { id: "16", name: "16. Geografi", classes: [] },
+      { id: "17", name: "17. KKA", classes: [] }
+    ];
 
+    const SUPERVISOR_TOKEN = "GURU2026";
+
+    // Inisialisasi Pilihan Mata Pelajaran
+    const subjectSelect = document.getElementById("subject-select");
+    const classGroup = document.getElementById("class-group");
+    const classSelect = document.getElementById("class-select");
+    const examUrlInput = document.getElementById("exam-url-input");
+
+    SUBJECT_LIST.forEach((sub, idx) => {
+      const opt = document.createElement("option");
+      opt.value = idx;
+      opt.textContent = sub.name;
+      subjectSelect.appendChild(opt);
+    });
+
+    // Menampilkan dropdown kelas secara dinamis
+    function handleSubjectChange() {
+      const selectedIndex = subjectSelect.value;
+      classSelect.innerHTML = '<option value="">-- Pilih Kelas --</option>';
+
+      if (selectedIndex !== "") {
+        const sub = SUBJECT_LIST[selectedIndex];
+        if (sub.classes && sub.classes.length > 0) {
+          sub.classes.forEach(cls => {
+            const opt = document.createElement("option");
+            opt.value = cls;
+            opt.textContent = cls;
+            classSelect.appendChild(opt);
+          });
+          classGroup.style.display = "block";
+        } else {
+          classGroup.style.display = "none";
+        }
+      } else {
+        classGroup.style.display = "none";
+      }
+    }
+
+    // =========================================================================
+    // LOGIKA SISTEM CBT & KEAMANAN
+    // =========================================================================
     let isExamRunning = false;
     let isLocked = false;
     let unlockCooldown = false;
@@ -373,6 +481,7 @@
     const startScreen = document.getElementById("start-screen");
     const examContainer = document.getElementById("exam-container");
     const examFrame = document.getElementById("exam-frame");
+    const activeExamTitle = document.getElementById("active-exam-title");
     const lockModal = document.getElementById("lock-modal");
     const exitModal = document.getElementById("exit-modal");
     const disqualifiedScreen = document.getElementById("disqualified-screen");
@@ -380,7 +489,6 @@
     const tokenError = document.getElementById("token-error");
     const violationReason = document.getElementById("violation-reason");
 
-    // Fallback Logo jika belum ada file logo.png
     function handleLogoError(img) {
       if (!img.dataset.retried) {
         img.dataset.retried = "true";
@@ -390,19 +498,72 @@
       }
     }
 
-    // 1. Kunci Layar Smartphone (Screen Wake Lock API)
+    function formatExamUrl(url) {
+      url = url.trim();
+      if (!url.startsWith("http://") && !url.startsWith("https://")) {
+        url = "https://" + url;
+      }
+      if (url.includes("docs.google.com/forms")) {
+        if (!url.includes("embedded=true")) {
+          url += url.includes("?") ? "&embedded=true" : "?embedded=true";
+        }
+      }
+      return url;
+    }
+
+    // Validasi Form & Memulai Ujian
+    function validateAndStart() {
+      const subIdx = subjectSelect.value;
+      const rawUrl = examUrlInput.value.trim();
+      let isValid = true;
+
+      // Validasi Mapel
+      if (subIdx === "") {
+        document.getElementById("subject-error").style.display = "block";
+        isValid = false;
+      } else {
+        document.getElementById("subject-error").style.display = "none";
+      }
+
+      // Validasi Kelas (Jika Mapel memiliki kelas)
+      const selectedSubject = SUBJECT_LIST[subIdx];
+      if (selectedSubject && selectedSubject.classes.length > 0 && !classSelect.value) {
+        document.getElementById("class-error").style.display = "block";
+        isValid = false;
+      } else {
+        document.getElementById("class-error").style.display = "none";
+      }
+
+      // Validasi Link Google Form
+      if (!rawUrl) {
+        document.getElementById("url-error").style.display = "block";
+        isValid = false;
+      } else {
+        document.getElementById("url-error").style.display = "none";
+      }
+
+      if (!isValid) return;
+
+      // Format Judul Topbar
+      let titleText = "📝 " + selectedSubject.name.replace(/^\d+\.\s*/, '');
+      if (selectedSubject.classes.length > 0) {
+        titleText += " (" + classSelect.value + ")";
+      }
+      activeExamTitle.textContent = titleText;
+
+      const readyUrl = formatExamUrl(rawUrl);
+      startExam(readyUrl);
+    }
+
     async function enableScreenWakeLock() {
       if ('wakeLock' in navigator) {
         try {
           wakeLockSentinel = await navigator.wakeLock.request('screen');
-        } catch (err) {
-          console.log("WakeLock gagal atau tidak didukung.");
-        }
+        } catch (err) {}
       }
     }
 
-    // 2. Memulai Ujian
-    function startExam() {
+    function startExam(url) {
       const el = document.documentElement;
       const requestFS = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
 
@@ -414,14 +575,13 @@
 
       startScreen.style.display = "none";
       examContainer.style.display = "flex";
-      examFrame.src = FORM_URL;
+      examFrame.src = url;
 
       setTimeout(() => {
         isExamRunning = true;
       }, 1000);
     }
 
-    // 3. Mengunci Ujian Saat Terdeteksi Pelanggaran
     function triggerLock(reason) {
       if (!isExamRunning || isLocked || unlockCooldown) return;
 
@@ -436,7 +596,6 @@
       }, 150);
     }
 
-    // 4. Membuka Kunci Ujian dengan Token
     function unlockExam() {
       const entered = tokenInput.value.replace(/\s+/g, '').toUpperCase();
       const actual = SUPERVISOR_TOKEN.replace(/\s+/g, '').toUpperCase();
@@ -464,7 +623,7 @@
       }
     }
 
-    // 5. Fitur Menu Keluar (Nilai 0)
+    // Fitur Keluar / Nilai 0
     function openExitModal() {
       exitModal.style.display = "flex";
     }
@@ -486,7 +645,7 @@
       disqualifiedScreen.style.display = "flex";
     }
 
-    // 6. Deteksi Navigasi / Pindah Aplikasi
+    // Deteksi Pelanggaran
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "hidden" && isExamRunning) {
         triggerLock("Terdeteksi berpindah aplikasi, menutup browser, atau membuka notifikasi.");
@@ -497,7 +656,7 @@
 
     window.addEventListener("pagehide", () => {
       if (isExamRunning) {
-        triggerLock("Terdeteksi keluar dari aplikasi browser.");
+        triggerLock("Terdeteksi keluar dari browser.");
       }
     });
 
@@ -509,11 +668,11 @@
 
     window.onbeforeunload = function() {
       if (isExamRunning) {
-        return "Ujian sedang berlangsung! Jika Anda keluar, lembar kerja akan terkunci.";
+        return "Ujian sedang berlangsung! Keluar akan mengunci lembar kerja.";
       }
     };
 
-    // Blokir Klik Kanan & Shortcut DevTools
+    // Cegah Inspect Element & Klik Kanan
     document.addEventListener("contextmenu", (e) => e.preventDefault());
     document.addEventListener("keydown", (e) => {
       if (
